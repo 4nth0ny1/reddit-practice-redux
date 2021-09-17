@@ -13,6 +13,11 @@ const postReducer = (state = { posts: [] }, action) => {
             return {
                 posts: editPost
             }
+        case "DELETE_POST":
+            const newPost = state.posts.filter(post => post.id !== action.id)
+            return {
+                posts: newPost
+            }
         default: 
             return state
     }

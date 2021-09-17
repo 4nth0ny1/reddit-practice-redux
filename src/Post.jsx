@@ -4,10 +4,13 @@ import { useState } from 'react';
 import PostEditForm from './PostEditForm';
 import { connect } from 'react-redux'
 
-
 const Post = props => {
 
     const [ showPostEditForm, setShowPostEditForm ] = useState(false)
+
+    const handleDelete = (e) => {
+        props.deletePost(props.post.id)
+    }
 
     return(
         <>
@@ -16,6 +19,7 @@ const Post = props => {
             <p>{props.post.subreddit}</p>
 
             <button onClick={() => setShowPostEditForm(!showPostEditForm)}>edit post</button>
+            <button onClick={handleDelete}>delete post</button>
             { showPostEditForm && <PostEditForm editPost={props.editPost} post={props.post} setShowPostEditForm={setShowPostEditForm} /> }
 
             <hr></hr>
@@ -25,7 +29,8 @@ const Post = props => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-      editPost: (post) => dispatch(editPost(post))
+      editPost: (post) => dispatch(editPost(post)), 
+      deletePost: (id) => dispatch(deletePost(id))
     }
   }
   

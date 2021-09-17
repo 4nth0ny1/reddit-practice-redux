@@ -12,6 +12,7 @@ const Home = props => {
         <h1>Welcome to the site</h1>
         <button onClick={() => setShowPostForm(!showPostForm)}>add post</button>
         { showPostForm && <PostForm addPost={props.addPost} post={props.post} setShowPostForm={setShowPostForm} /> }
+        <hr></hr>
         <PostContainer />
       </>
   );

@@ -43,3 +43,17 @@ export const editPost = (post) => {
         })
     }
 }
+
+export const deletePost = (postId) => {
+    return (dispatch) => {
+        const options = {
+            method: "DELETE"
+        }
+
+        fetch(`http://localhost:3000/posts/${postId}`, options)
+        .then(res => res.json())
+        .then(message => {
+            dispatch({type: "DELETE_POST", id: postId})
+        })
+    }
+}
