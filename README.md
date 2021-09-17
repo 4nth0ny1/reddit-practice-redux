@@ -1,70 +1,192 @@
-# Getting Started with Create React App
+npx create react app my-app
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+npm add react-redux redux-thunk react-router-dom redux-devtools-extension   try this next time
 
-## Available Scripts
+or 
 
-In the project directory, you can run:
+npm add react-redux
+npm add redux-thunk
+npm add react-router-dom
+npm add redux-devtools-extension
+npm install
 
-### `yarn start`
+__________________________________________
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+// create store in index.js
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+// add these imports
+import {BrowserRouter as Router} from 'react-router-dom'
+import { composeWithDevTools } from 'redux-devtools-extension';
+import { createStore, applyMiddleware } from 'redux'
+import rootReducer from './redux/reducers/rootReducer'
+import {Provider} from 'react-redux'
+import thunk from 'redux-thunk'
 
-### `yarn test`
+const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(thunk)))
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+//provider means anything child has access to what is passed in. in this case it's the redux store
 
-### `yarn build`
+ReactDOM.render(
+  <Router>
+    <Provider store={store}> 
+      <App />
+    </Provider>
+  </Router>,
+  document.getElementById('root')
+);
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+//adding this will break the app, because you need a rootReducer. add the folders and then add a rootReducer
+__________________________________________
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+// create folders => 
+src 
+    redux 
+        actions
+            postActions.jsx
+        reducers  
+            rootReducer.jsx
+            postReducer.jsx
+    components
+        Home.jsx
+        Posts
+            PostContainer.jsx
+            Post.jsx
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+__________________________________________
 
-### `yarn eject`
+// rootReducer
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+import postReducer from './postReducer'
+import { combineReducers } from 'redux'
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+const rootReducer = combineReducers({
+    posts: postReducer
+})
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+export default rootReducer;
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+__________________________________________
 
-## Learn More
+// postReducer
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+const postReducer = (state = { posts: [] }, action) => {
+    switch(action.type){
+        case 'FETCH_POSTS':
+            return {
+                posts: action.posts
+            }
+        default: 
+            return state
+    }
+}
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+export default postReducer
 
-### Code Splitting
+___________________________________________
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+// postAction
 
-### Analyzing the Bundle Size
+export const fetchPosts = (posts) => {
+    return (dispatch) => {
+        fetch(`http://localhost:3000/posts`)
+        .then(res => res.json())
+        .then(posts => dispatch({type: "FETCH_POSTS", posts: posts}))
+    }
+}
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+__________________________________________
 
-### Making a Progressive Web App
+// Router => home route 
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+import PostContainer from './PostContainer'
+import React from "react";
 
-### Advanced Configuration
+const Home = () => {
+  return (
+      <>
+        <h1>Welcome to the site</h1>
+        <PostContainer />
+      </>
+  );
+}
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+export default Home;
+__________________________________________
 
-### Deployment
+App.js
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+import './App.css';
+import { BrowserRouter as Router, Route, Switch, Link} from 'react-router-dom'
+import Home from './components/Navigation/Home'
 
-### `yarn build` fails to minify
+function App() {
+  return (
+    <div className="App">
+          <Router>
+            <Switch>
+              <Route path="/" exact component={() => <Home />} />
+            </Switch>
+          </Router>
+    </div>
+  );
+}
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+export default App;
+
+__________________________________________
+
+// PostContainer 
+//in charge of fetching all the posts 
+
+import React from 'react';
+import Post from './Post'
+import { connect } from 'react-redux'
+import { fetchPosts } from "./redux/actions/postActions";   //needs to call the functions we need from the postAction File 
+
+class PostContainer extends React.Component {
+    componentDidMount() {
+        this.props.fetchPosts()
+    }
+    //becasue we're calling an action we have to mapDispatchToProps it
+
+    render(){
+        return(
+            <>
+                {this.props.posts.map(post => <Post post={post}/>)}
+            </>
+        )
+    }
+}
+
+const mapStateToProps = state => {
+    return {
+        posts: state.posts.posts
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        fetchPosts: () => dispatch(fetchPosts())  
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(PostContainer);
+
+______________________________________________________
+
+// create Post
+
+const Post = props => {
+    return(
+        <>
+            <p>{props.post.title}</p>
+            <p>{props.post.content}</p>
+            <p>{props.post.subreddit}</p>
+            <hr></hr>
+        </>
+    )
+}
+
+export default Post
+
+_____________________________________________________
