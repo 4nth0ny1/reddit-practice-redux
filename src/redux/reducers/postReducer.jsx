@@ -8,6 +8,11 @@ const postReducer = (state = { posts: [] }, action) => {
             return {
                 posts: [...state.posts, action.post]
             }
+        case "EDIT_POST": 
+            const editPost = state.posts.map(post => post.id === action.post.id ? action.post : post)
+            return {
+                posts: editPost
+            }
         default: 
             return state
     }

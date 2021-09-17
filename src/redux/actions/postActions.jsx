@@ -24,3 +24,22 @@ export const addPost = (post) => {
         })
     }
 }
+
+export const editPost = (post) => {
+    return (dispatch) => {
+        const options = {
+            method: "PATCH", 
+            headers: {
+                "Content-type": "application/json", 
+                "accept": "application/json"
+            }, 
+            body: JSON.stringify({post})
+        }
+
+        fetch(`http://127.0.0.1:3000/posts/${post.id}`, options)
+        .then(res => res.json())
+        .then(post => {
+            dispatch({type: "EDIT_POST", post: post})
+        })
+    }
+}
