@@ -30,7 +30,7 @@ const Post = props => {
 const mapDispatchToProps = (dispatch) => {
     return {
       editPost: (post) => dispatch(editPost(post)), 
-      deletePost: (id) => dispatch(deletePost(id))
+      deletePost: (id) => dispatch(deletePost(id)),
     }
   }
   

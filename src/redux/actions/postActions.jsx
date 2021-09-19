@@ -51,9 +51,6 @@ export const deletePost = (postId) => {
         }
 
         fetch(`http://localhost:3000/posts/${postId}`, options)
-        .then(res => res.json())
-        .then(message => {
-            dispatch({type: "DELETE_POST", id: postId})
-        })
+        dispatch({type: "DELETE_POST", id: postId})
     }
 }

@@ -25,6 +25,7 @@ class PostForm extends Component {
         const handleSubmit = (event) => {
             event.preventDefault()
             this.props.addPost(this.state)
+            this.props.setShowPostForm(false)
             Array.from(document.querySelectorAll("input")).forEach(
                 input => (input.value = "")
             )
