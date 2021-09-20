@@ -8,11 +8,12 @@ class CommentContainer extends React.Component {
     componentDidMount() {
         this.props.fetchComments()
     }
-    
+       
     render() {
+        
         return (
             <>
-                {this.props.comments.map(comment => <Comment comment={comment} />)}
+                {this.props.comments > 0 && (this.props.comments).map(comment => <Comment key={comment.id} comment={comment} /> )}
             </>
         )
     }
