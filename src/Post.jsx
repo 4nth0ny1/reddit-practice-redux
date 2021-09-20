@@ -3,10 +3,12 @@ import { editPost, deletePost } from './redux/actions/postActions';
 import { useState } from 'react'; 
 import PostEditForm from './PostEditForm';
 import { connect } from 'react-redux'
+import CommentContainer from "./CommentContainer"
 
 const Post = props => {
-
+    
     const [ showPostEditForm, setShowPostEditForm ] = useState(false)
+    const [ showComments, setShowComments ] = useState(props.post.comments)
 
     const handleDelete = (e) => {
         props.deletePost(props.post.id)
@@ -20,8 +22,10 @@ const Post = props => {
 
             <button onClick={() => setShowPostEditForm(!showPostEditForm)}>edit post</button>
             <button onClick={handleDelete}>delete post</button>
-            { showPostEditForm && <PostEditForm editPost={props.editPost} post={props.post} setShowPostEditForm={setShowPostEditForm} /> }
+            <button onClick={() => setShowComments(!showComments)}>show comments</button>
 
+            { showPostEditForm && <PostEditForm editPost={props.editPost} post={props.post} setShowPostEditForm={setShowPostEditForm} /> }
+            { showComments && <CommentContainer comment={props.comment} setShowComments={setShowComments} /> }
             <hr></hr>
         </>
     )
@@ -29,8 +33,9 @@ const Post = props => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
+    
       editPost: (post) => dispatch(editPost(post)), 
-      deletePost: (id) => dispatch(deletePost(id)),
+      deletePost: (id) => dispatch(deletePost(id))
     }
   }
   
