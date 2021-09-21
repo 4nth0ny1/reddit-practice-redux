@@ -3,8 +3,8 @@ import commentReducer from './commentReducer'
 import { combineReducers } from 'redux'
 
 const rootReducer = combineReducers({
-    posts: postReducer, 
-    comments: commentReducer
+    postReducer: postReducer, 
+    commentReducer: commentReducer
 })
 
 export default rootReducer;

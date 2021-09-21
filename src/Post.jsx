@@ -25,7 +25,7 @@ const Post = props => {
             <button onClick={() => setShowComments(!showComments)}>show comments</button>
 
             { showPostEditForm && <PostEditForm editPost={props.editPost} post={props.post} setShowPostEditForm={setShowPostEditForm} /> }
-            { showComments && <CommentContainer comment={props.comment} setShowComments={setShowComments} /> }
+            { showComments && <CommentContainer comments={props.post.comments} setShowComments={setShowComments} /> }
             <hr></hr>
         </>
     )
@@ -33,7 +33,7 @@ const Post = props => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-    
+
       editPost: (post) => dispatch(editPost(post)), 
       deletePost: (id) => dispatch(deletePost(id))
     }

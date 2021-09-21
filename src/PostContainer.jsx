@@ -24,7 +24,7 @@ class PostContainer extends React.Component {
 
 const mapStateToProps = state => {
     return {
-        posts: state.posts.posts
+        posts: state.postReducer.posts
     }
 }
 
